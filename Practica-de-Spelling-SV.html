@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🐝 ¡ A Deletrear ! · Práctica de Spelling</title>
+<style>
+  :root{
+    --bg1:#7c4dff; --bg2:#18c0ff; --card:#ffffff; --ink:#23235b;
+    --accent:#2c1d13; --accent2:#ffcc00; --good:#2ecc71; --bad:#ff5c6c;
+    --tile:#fff3d6; --tile-border:#ffb74d; --slot:#eef1ff;
+    --choice1:#ffecf6; --choice2:#e9f7ff; --choice3:#fff9df;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0; height:100%;}
+  body{
+    font-family:'Comic Sans MS','Chalkboard SE','Comic Neue','Trebuchet MS',cursive,sans-serif;
+    color:var(--ink);
+    background:linear-gradient(135deg,var(--bg1),var(--bg2));
+    background-attachment:fixed;
+    min-height:100%;
+    touch-action:manipulation;
+    overflow-x:hidden;
+  }
+  .wrap{max-width:860px; margin:0 auto; padding:16px 14px 60px;}
+  .topbar{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px;}
+  .logo{font-size:1.5rem; font-weight:bold; color:#fff; text-shadow:0 2px 0 rgba(0,0,0,.18); display:flex; align-items:center; gap:8px;}
+  .card{background:var(--card); border-radius:24px; padding:22px 20px; box-shadow:0 12px 30px rgba(0,0,0,.22);}
+  h1{margin:.1em 0 .2em; font-size:1.5rem;} h2{margin:.2em 0 .4em; font-size:1.25rem;} p.lead{margin:.2em 0 1em; color:#555; font-size:1rem;}
+  .hidden{display:none !important;}
+  button{font-family:inherit; cursor:pointer; border:none; border-radius:16px; font-weight:bold;}
+  .btn{background:var(--accent); color:#fff; font-size:1.1rem; padding:14px 22px; box-shadow:0 6px 0 #c85e0e; transition:transform .06s ease, box-shadow .06s ease;}
+  .btn:active{transform:translateY(4px); box-shadow:0 2px 0 #c85e0e;}
+  .btn.big{font-size:1.35rem; padding:18px 30px; width:100%;}
+  .btn.green{background:var(--good); box-shadow:0 6px 0 #1e9e57;} .btn.green:active{box-shadow:0 2px 0 #1e9e57;}
+  .btn.blue{background:#3d8bff; box-shadow:0 6px 0 #2b66c2;} .btn.blue:active{box-shadow:0 2px 0 #2b66c2;}
+  .btn.ghost{background:#eef1ff; color:#3a3a7a; box-shadow:0 6px 0 #c9d2f3;} .btn.ghost:active{box-shadow:0 2px 0 #c9d2f3;}
+  .btn.small{font-size:.95rem; padding:10px 14px; box-shadow:0 4px 0 rgba(0,0,0,.18);} .btn:disabled{filter:grayscale(.6); opacity:.55; box-shadow:none; cursor:not-allowed; transform:none;}
+  .row-btns{display:flex; flex-wrap:wrap; gap:10px; margin-top:14px;}
+  .word-row{display:flex; align-items:center; gap:10px; margin:8px 0;}
+  .num{width:30px; height:30px; flex:0 0 30px; border-radius:50%; background:var(--accent2); color:#5b4500; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:.95rem;}
+  .word-row input{flex:1; font-family:inherit; font-size:1.15rem; padding:12px 14px; border:3px solid #e3e7ff; border-radius:14px; outline:none; min-width:0;}
+  .word-row input:focus{border-color:#7c4dff;}
+  .mini{flex:0 0 auto; background:#ffe9c2; color:#7a4b00; border-radius:50%; width:46px; height:46px; font-size:1.3rem; box-shadow:0 4px 0 #e8c98a;} .mini:active{transform:translateY(3px); box-shadow:0 1px 0 #e8c98a;}
+  .options{display:flex; flex-wrap:wrap; align-items:center; gap:16px; margin-top:8px; color:#444; font-size:.95rem;} .options label{display:flex; align-items:center; gap:7px; cursor:pointer;} .options input{width:20px; height:20px;}
+  .tip{background:#fff7e6; border:2px dashed var(--tile-border); border-radius:14px; padding:10px 14px; color:#7a5b1e; font-size:.92rem; margin-top:14px;}
+  .progress-wrap{margin-bottom:12px;} .progress-top{display:flex; justify-content:space-between; align-items:center; font-weight:bold; margin-bottom:6px;} .bar{height:16px; background:#e7ecff; border-radius:10px; overflow:hidden;} .bar > i{display:block; height:100%; width:0%; background:linear-gradient(90deg,#ffcc00,#ff7a18); transition:width .35s ease;} .stars{color:var(--accent); font-size:1.1rem;}
+  .listen-area{text-align:center; margin:6px 0 18px;} .speak-big{background:var(--accent2); color:#5b4500; border-radius:50%; width:120px; height:120px; font-size:3rem; box-shadow:0 8px 0 #d9a900; line-height:1;} .speak-big:active{transform:translateY(5px); box-shadow:0 3px 0 #d9a900;} .listen-sub{margin-top:10px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;}
+  .mode-pill{display:inline-flex; align-items:center; justify-content:center; gap:8px; background:#f0ecff; color:#5b4bb7; border-radius:999px; padding:8px 14px; font-weight:bold; margin:0 auto 10px;}
+  .level-picker{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; margin:14px 0;}
+  .level-card{background:#f8f7ff; border:3px solid #e3defd; border-radius:18px; padding:14px; cursor:pointer;}
+  .level-card.active{border-color:#7c4dff; box-shadow:0 8px 18px rgba(124,77,255,.18);} .level-card strong{display:block; font-size:1.05rem; margin-bottom:6px;}
+  .answer{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; min-height:64px; margin:8px 0 16px;}
+  .slot{width:56px; height:64px; border-radius:14px; background:var(--slot); border:3px dashed #c3ccff; display:flex; align-items:center; justify-content:center; font-size:2rem; font-weight:bold; color:var(--ink);}
+  .slot.filled{border-style:solid; border-color:var(--tile-border); background:var(--tile); cursor:pointer; box-shadow:0 4px 0 #e0a85a;}
+  .slot.locked{background:#d6ffe2; border-color:var(--good); box-shadow:0 4px 0 #9ee0b6; cursor:default;}
+  .slot.wrong{background:#ffe1e4; border-color:var(--bad); animation:shake .4s;} .slot.space{width:40px; background:repeating-linear-gradient(45deg,#eef1ff,#eef1ff 6px,#e2e7ff 6px,#e2e7ff 12px);}
+  .pool{display:flex; flex-wrap:wrap; gap:10px; justify-content:center; min-height:64px; padding:10px; background:#f3f1ff; border-radius:18px;}
+  .tile{width:56px; height:64px; border-radius:14px; background:var(--tile); border:3px solid var(--tile-border); display:flex; align-items:center; justify-content:center; font-size:2rem; font-weight:bold; color:var(--ink); cursor:pointer; box-shadow:0 5px 0 #e0a85a; user-select:none; animation:pop .25s ease;}
+  .tile:active{transform:translateY(4px); box-shadow:0 1px 0 #e0a85a;} .tile.space{width:42px;} .tile.muted{opacity:.45; pointer-events:none;}
+  .feedback{text-align:center; font-size:1.5rem; font-weight:bold; min-height:1.6em; margin:6px 0;} .feedback.good{color:var(--good);} .feedback.bad{color:var(--bad);}
+  .controls{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:6px;}
+  .done-emoji{font-size:4.5rem; text-align:center; margin:6px 0;} .done-stars{font-size:2rem; text-align:center; color:var(--accent); margin:6px 0 16px;}
+  .peek{position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(20,12,60,.55); z-index:50; font-size:clamp(2.5rem,12vw,5rem); color:#fff; font-weight:bold; letter-spacing:.08em; text-shadow:0 3px 0 rgba(0,0,0,.3);}
+  .choices-stage{position:relative; min-height:300px; margin:18px 0 10px; overflow:hidden; border-radius:24px; background:linear-gradient(180deg,#a8efff 0%,#79d3ff 42%,#46b8f3 100%); border:4px solid #d8f5ff; box-shadow:inset 0 -18px 0 rgba(255,228,154,.45);} .choices-stage.balloons{background:linear-gradient(180deg,#9fe3ff 0%,#d7f6ff 60%,#ffffff 100%);} .choices-stage::before{content:''; position:absolute; inset:auto 0 0 0; height:72px; background:radial-gradient(circle at 20px 16px,#ffeaa1 0 16px,transparent 17px) 0 0/90px 60px repeat-x; opacity:.55;} .choices-stage.balloons::before{height:0; background:none;} .choices-stage::after{content:''; position:absolute; left:0; right:0; top:0; height:56px; background:radial-gradient(circle at 50px 18px,rgba(255,255,255,.75) 0 20px,transparent 21px) 0 0/190px 60px repeat-x; opacity:.8; pointer-events:none;}
+  .choice-item{position:absolute; display:flex; align-items:center; justify-content:center; text-align:center; padding:14px 18px; min-width:140px; max-width:210px; min-height:76px; font-size:1.5rem; font-weight:bold; color:#3b316c; user-select:none; cursor:pointer; transition:transform .15s ease, filter .15s ease, box-shadow .15s ease; animation:floaty 3s ease-in-out infinite;} .choice-item:nth-child(2){animation-duration:3.4s;} .choice-item:nth-child(3){animation-duration:3.8s;} .choice-item:hover,.choice-item:focus{transform:scale(1.04); filter:brightness(1.02);} .choice-item[disabled]{pointer-events:none; opacity:.75;} .choice-item.correctPulse{animation:pop .25s ease, glow 1s ease 2;} .choice-item.wrongShake{animation:shake .4s;}
+  .fish{border-radius:48% 52% 46% 54% / 56% 56% 44% 44%; box-shadow:0 10px 0 rgba(74,128,180,.18);} .fish::before{content:''; position:absolute; right:-18px; top:22px; border-top:18px solid transparent; border-bottom:18px solid transparent; border-left:24px solid currentColor; filter:brightness(.95); opacity:.35;} .fish::after{content:''; position:absolute; left:18px; top:29px; width:10px; height:10px; border-radius:50%; background:#fff; box-shadow:inset -2px 0 0 #2f2f5d; opacity:.9;}
+  .balloon{border-radius:50% 50% 52% 52% / 58% 58% 42% 42%; box-shadow:0 10px 0 rgba(127,96,32,.12);} .balloon::before{content:''; position:absolute; bottom:-26px; left:50%; width:3px; height:28px; background:rgba(120,120,120,.55); transform:translateX(-50%);} .balloon::after{content:''; position:absolute; bottom:-7px; left:50%; width:12px; height:12px; background:inherit; transform:translateX(-50%) rotate(45deg);}
+  .choices-helper{text-align:center; color:#5b5b7a; margin-top:6px; font-size:.98rem;}
+  .write-panel{background:#f8f7ff; border:3px solid #e5ddff; border-radius:22px; padding:14px; margin-top:10px;}
+  .write-tip{text-align:center; color:#5b5b7a; margin:-4px 0 12px;}
+  .footer-note{text-align:center; color:#fff; opacity:.85; font-size:.85rem; margin-top:18px;} .warn{background:#fff3cd; color:#7a5b1e; border-radius:12px; padding:8px 12px; font-size:.85rem; margin-top:10px; text-align:center;}
+  @keyframes pop{0%{transform:scale(.3);}80%{transform:scale(1.08);}100%{transform:scale(1);}} @keyframes shake{0%,100%{transform:translateX(0);}20%{transform:translateX(-6px);}40%{transform:translateX(6px);}60%{transform:translateX(-5px);}80%{transform:translateX(5px);}} @keyframes fall{to{transform:translateY(108vh) rotate(720deg);}} @keyframes floaty{0%,100%{transform:translateY(0px);}50%{transform:translateY(-8px);}} @keyframes swimA{0%{transform:translateX(0) translateY(0);}25%{transform:translateX(18px) translateY(-6px);}50%{transform:translateX(0) translateY(5px);}75%{transform:translateX(-15px) translateY(-4px);}100%{transform:translateX(0) translateY(0);}} @keyframes swimB{0%{transform:translateX(0) translateY(0);}33%{transform:translateX(-18px) translateY(4px);}66%{transform:translateX(14px) translateY(-8px);}100%{transform:translateX(0) translateY(0);}} @keyframes glow{0%,100%{box-shadow:0 0 0 rgba(46,204,113,0);}50%{box-shadow:0 0 0 12px rgba(46,204,113,.18);}}
+  .confetti{position:fixed; top:-20px; width:12px; height:18px; z-index:60; border-radius:3px; will-change:transform; animation:fall linear forwards;}
+  @media (max-width:640px){ .choice-item{min-width:110px; max-width:150px; min-height:66px; font-size:1.15rem; padding:12px 14px;} .choices-stage{min-height:320px;} .speak-big{width:108px; height:108px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="logo">🐝 ¡ A Deletrear !</div>
+    <button id="btnToSetupTop" class="btn small ghost hidden">⚙️ Regresar</button>
+  </div>
+  <section id="screen-setup" class="card">
+    <h1>Escribe las palabras de la semana</h1>
+    <p class="lead">Escribe hasta 10 palabras en inglés. La app tiene 3 niveles: <strong>Nivel 1</strong> para escoger la palabra correcta, <strong>Nivel 2</strong> para ordenar las letras y <strong>Nivel 3</strong> para escribirla con un grupo reducido de fichas.</p>
+    <div id="wordList"></div>
+    <div class="options"><label><input type="checkbox" id="optUpper"> Mostrar fichas en MAYÚSCULAS</label></div>
+    <div class="mode-select">
+      <h2>Escoge el nivel</h2>
+      <div class="level-picker">
+        <button type="button" class="level-card active" id="level1Card"><strong>🎯 Nivel 1 · Escucha y escoge</strong></button>
+        <button type="button" class="level-card" id="level2Card"><strong>🧩 Nivel 2 · Ordena las letras</strong></button>
+        <button type="button" class="level-card" id="level3Card"><strong>✍️ Nivel 3 · Escucha y escribe</strong></button>
+      </div>
+    </div>
+    <div class="row-btns"><button id="btnListenAll" class="btn blue">🔊 Escuchar todas</button><button id="btnClear" class="btn ghost small">🧹 Borrar todo</button></div>
+    <div class="row-btns"><button id="btnStart" class="btn green big">▶️ ¡ A practicar !</button></div>
+    <div class="tip">💡 Consejo: las palabras se guardan en este dispositivo, así que solo tienes que cambiarlas cada lunes. Funciona sin internet.</div>
+    <div id="ttsWarn" class="warn hidden">⚠️ Este navegador no puede reproducir voz. Prueba con Chrome o Safari.</div>
+  </section>
+
+  <section id="screen-practice" class="card hidden">
+    <div class="progress-wrap"><div class="progress-top"><span id="progressText">Palabra 1 de 10</span><span id="starText" class="stars">⭐ 0</span></div><div class="bar"><i id="progressBar"></i></div></div>
+    <div id="modePill" class="mode-pill">🎯 Nivel 1</div>
+
+    <div id="practice-level1">
+      <h2 style="text-align:center;">Escucha y escoge la palabra correcta</h2>
+      <div class="listen-area"><button id="btnSpeakChoice" class="speak-big" title="Escuchar la palabra">🔊</button><div class="listen-sub"><button id="btnSlowChoice" class="btn small ghost">🐢 Despacio</button><button id="btnPeekChoice" class="btn small ghost">👀 Ver (pista)</button></div></div>
+      <div id="choicesStage" class="choices-stage"></div>
+      <div class="choices-helper">Toca el pez o globo que tenga la palabra correcta.</div>
+      <div id="feedbackChoice" class="feedback"></div>
+      <div class="controls"><button id="btnNextChoice" class="btn green hidden">Siguiente ➡️</button></div>
+    </div>
+
+    <div id="practice-level2" class="hidden">
+      <h2 style="text-align:center;">Escucha y ordena las letras</h2>
+      <div class="listen-area"><button id="btnSpeak" class="speak-big" title="Escuchar la palabra">🔊</button><div class="listen-sub"><button id="btnSlow" class="btn small ghost">🐢 Despacio</button><button id="btnPeek" class="btn small ghost">👀 Ver (pista)</button></div></div>
+      <div id="answer" class="answer"></div>
+      <div id="pool" class="pool"></div>
+      <div id="feedback" class="feedback"></div>
+      <div class="controls"><button id="btnNext" class="btn green hidden">Siguiente ➡️</button></div>
+    </div>
+
+    <div id="practice-level3" class="hidden">
+      <h2 style="text-align:center;">Escucha y escribe la palabra</h2>
+      <div class="listen-area"><button id="btnSpeakWrite" class="speak-big" title="Escuchar la palabra">🔊</button><div class="listen-sub"><button id="btnSlowWrite" class="btn small ghost">🐢 Despacio</button><button id="btnPeekWrite" class="btn small ghost">👀 Ver (pista)</button></div></div>
+      <div class="write-panel">
+        <div class="write-tip">Arma la palabra usando sus letras y solo 5 letras extra.</div>
+        <div id="answerWrite" class="answer"></div>
+        <div id="poolWrite" class="pool"></div>
+      </div>
+      <div id="feedbackWrite" class="feedback"></div>
+      <div class="controls"><button id="btnClearWrite" class="btn ghost">↩️ Borrar intento</button><button id="btnCheckWrite" class="btn blue">✅ Revisar</button><button id="btnNextWrite" class="btn green hidden">Siguiente ➡️</button></div>
+    </div>
+  </section>
+
+  <section id="screen-done" class="card hidden">
+    <div class="done-emoji">🏆</div><h1 style="text-align:center;">¡Lo lograste!</h1><div id="doneStars" class="done-stars">⭐⭐⭐</div><p class="lead" style="text-align:center;" id="doneMsg">Terminaste todas las palabras. ¡Buen trabajo!</p>
+    <div class="row-btns"><button id="btnAgain" class="btn green big">🔁 Jugar otra vez</button></div>
+    <div class="row-btns"><button id="btnToSetup" class="btn ghost">⚙️ Cambiar palabras</button></div>
+  </section>
+  <div class="footer-note">Hecho con cariño para practicar spelling 🐝</div>
+</div>
+<script>
+(function(){
+  "use strict";
+  var STORE_KEY = 'spelling_words_v3';
+  var STORE_OPT = 'spelling_opt_v3';
+  var MAX_WORDS = 10;
+  var MODE_CHOICE = 'choice';
+  var MODE_SPELL = 'spell';
+  var MODE_WRITE = 'write';
+  var words = [], pos = 0, target = [], poolTiles = [], placed = [], locked = [], score = 0, busy = false, upper = false;
+  var mode = MODE_CHOICE, currentWord = '', currentChoices = [], currentChoiceStyle = 'fish';
+  var writeTarget = [], writePool = [], writePlaced = [];
+
+  function $(id){ return document.getElementById(id); }
+  function show(el){ el.classList.remove('hidden'); }
+  function hide(el){ el.classList.add('hidden'); }
+  function disp(text){ return upper ? String(text).toUpperCase() : text; }
+  function cleanWord(w){ return String(w || '').replace(/\s+/g,' ').trim(); }
+  function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j = Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+
+  var voices = [];
+  function loadVoices(){ try { voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : []; } catch(e){ voices = []; } }
+  if (window.speechSynthesis){ loadVoices(); if (typeof speechSynthesis.onvoiceschanged !== 'undefined') speechSynthesis.onvoiceschanged = loadVoices; } else { show($('ttsWarn')); }
+  function pickVoice(){ if(!voices || !voices.length) loadVoices(); if(!voices || !voices.length) return null; return voices.find(function(v){return /en[-_]US/i.test(v.lang);}) || voices.find(function(v){return /^en/i.test(v.lang);}) || null; }
+  function speak(text, rate){ if(!window.speechSynthesis || !text) return; try{ speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(text); var v = pickVoice(); if(v) u.voice = v; u.lang = (v && v.lang) || 'en-US'; u.rate = rate || 0.85; u.pitch = 1.05; speechSynthesis.speak(u); }catch(e){} }
+  function speakAll(list){ if(!window.speechSynthesis) return; try{ speechSynthesis.cancel(); var v = pickVoice(); list.forEach(function(w){ var u = new SpeechSynthesisUtterance(w); if(v) u.voice = v; u.lang = (v && v.lang) || 'en-US'; u.rate = 0.85; u.pitch = 1.05; speechSynthesis.speak(u); }); }catch(e){} }
+
+  var actx = null;
+  function audioCtx(){ if(actx) return actx; try{ actx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){ actx = null; } return actx; }
+  function beep(freq, start, dur, type, gain){ var ctx = audioCtx(); if(!ctx) return; var o = ctx.createOscillator(), g = ctx.createGain(); o.type = type || 'sine'; o.frequency.value = freq; g.gain.value = 0.0001; o.connect(g); g.connect(ctx.destination); var t = ctx.currentTime + start; g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(gain || 0.18, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + dur); o.start(t); o.stop(t + dur + 0.02); }
+  function successSound(){ beep(523,0,0.14,'triangle',0.2); beep(659,0.13,0.14,'triangle',0.2); beep(784,0.26,0.22,'triangle',0.22); }
+  function wrongSound(){ beep(200,0,0.18,'sawtooth',0.12); }
+  function clickSound(){ beep(440,0,0.06,'square',0.08); }
+  function confetti(){ var colors = ['#ff7a18','#ffcc00','#2ecc71','#3d8bff','#ff5c6c','#a45bff']; for(var i=0;i<70;i++){ (function(){ var c = document.createElement('div'); c.className = 'confetti'; c.style.left = Math.random()*100 + 'vw'; c.style.background = colors[Math.floor(Math.random()*colors.length)]; var dur = 1.8 + Math.random()*1.6; c.style.animationDuration = dur + 's'; c.style.animationDelay = (Math.random()*0.3) + 's'; c.style.transform = 'rotate(' + (Math.random()*360) + 'deg)'; if(Math.random()<0.5) c.style.borderRadius='50%'; document.body.appendChild(c); setTimeout(function(){ if(c.parentNode) c.parentNode.removeChild(c); }, (dur+0.5)*1000); })(); } }
+
+  function saveWords(arr){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(arr)); }catch(e){} }
+  function loadSaved(){ try{ var s = localStorage.getItem(STORE_KEY); return s ? JSON.parse(s) : []; }catch(e){ return []; } }
+  function saveOpt(){ try{ localStorage.setItem(STORE_OPT, JSON.stringify({upper:upper, mode:mode})); }catch(e){} }
+  function loadOpt(){ try{ var s = localStorage.getItem(STORE_OPT); if(s){ var obj = JSON.parse(s); upper = !!obj.upper; mode = obj.mode === MODE_SPELL ? MODE_SPELL : (obj.mode === MODE_WRITE ? MODE_WRITE : MODE_CHOICE); } }catch(e){} }
+
+  function renderSetup(){
+    var saved = loadSaved(), list = $('wordList'); list.innerHTML = '';
+    for(var i=0;i<MAX_WORDS;i++){
+      var row = document.createElement('div'); row.className = 'word-row';
+      var num = document.createElement('div'); num.className = 'num'; num.textContent = (i+1);
+      var inp = document.createElement('input'); inp.type = 'text'; inp.setAttribute('autocomplete','off'); inp.setAttribute('autocapitalize','off'); inp.setAttribute('spellcheck','false'); inp.placeholder = 'palabra ' + (i+1); inp.value = saved[i] || ''; inp.dataset.idx = i; inp.addEventListener('input', onWordInput);
+      var b = document.createElement('button'); b.className = 'mini'; b.type='button'; b.textContent = '🔊'; b.title = 'Escuchar'; b.addEventListener('click', (function(input){ return function(){ var w = cleanWord(input.value); if(w) speak(w); }; })(inp));
+      row.appendChild(num); row.appendChild(inp); row.appendChild(b); list.appendChild(row);
+    }
+    $('optUpper').checked = upper; updateModeCards(); updateStartState();
+  }
+  function getInputs(){ return Array.prototype.slice.call($('wordList').querySelectorAll('input')); }
+  function getWords(){ return getInputs().map(function(i){ return cleanWord(i.value); }).filter(function(w){ return w.length>0; }); }
+  function onWordInput(){ saveWords(getInputs().map(function(i){return i.value;})); updateStartState(); }
+  function updateStartState(){ $('btnStart').disabled = getWords().length === 0; }
+
+  function sampleDistractors(correct, list){ var pool = list.filter(function(w){ return w.toLowerCase() !== correct.toLowerCase(); }); shuffle(pool); var picked = pool.slice(0, 2); while(picked.length < 2){ picked.push(makeVariant(correct, picked.concat([correct]))); } return shuffle([correct].concat(picked)); }
+  function makeVariant(word, avoid){ var variants = []; if(word.length > 2){ var arr = word.split(''); var swap = arr.slice(); var i = 0, j = arr.length - 1; if(i !== j){ var tmp = swap[i]; swap[i] = swap[j]; swap[j] = tmp; variants.push(swap.join('')); } var mid = arr.slice(); mid.splice(1, 0, arr[1]); variants.push(mid.join('').slice(0, word.length)); variants.push(word.slice(0,-1) + String.fromCharCode(Math.max(97, word.toLowerCase().charCodeAt(word.length-1)-1))); } variants.push(word + word.slice(-1)); variants.push(word.slice(0, Math.max(1, word.length-1))); variants = variants.map(cleanWord).filter(function(v){ return v && v.toLowerCase() !== word.toLowerCase(); }); for(var k=0;k<variants.length;k++){ var exists = avoid.some(function(a){ return String(a).toLowerCase() === variants[k].toLowerCase(); }); if(!exists) return variants[k]; } return word + '?'; }
+
+  function setMode(newMode){ mode = newMode === MODE_SPELL ? MODE_SPELL : (newMode === MODE_WRITE ? MODE_WRITE : MODE_CHOICE); updateModeCards(); saveOpt(); }
+  function updateModeCards(){ $('level1Card').classList.toggle('active', mode === MODE_CHOICE); $('level2Card').classList.toggle('active', mode === MODE_SPELL); $('level3Card').classList.toggle('active', mode === MODE_WRITE); }
+  function updateVisiblePractice(){
+    $('modePill').textContent = mode === MODE_CHOICE ? '🎯 Nivel 1' : (mode === MODE_SPELL ? '🧩 Nivel 2' : '✍️ Nivel 3');
+    $('modePill').style.background = mode === MODE_CHOICE ? '#e8fbff' : (mode === MODE_SPELL ? '#f0ecff' : '#fff3df');
+    $('modePill').style.color = mode === MODE_CHOICE ? '#0d7b9a' : (mode === MODE_SPELL ? '#5b4bb7' : '#9a5d00');
+    if(mode === MODE_CHOICE){ show($('practice-level1')); hide($('practice-level2')); hide($('practice-level3')); }
+    else if(mode === MODE_SPELL){ hide($('practice-level1')); show($('practice-level2')); hide($('practice-level3')); }
+    else { hide($('practice-level1')); hide($('practice-level2')); show($('practice-level3')); }
+  }
+
+  function startPractice(){ var w = getWords(); if(w.length===0) return; words = shuffle(w.slice()); pos = 0; score = 0; busy = false; audioCtx(); hide($('screen-setup')); hide($('screen-done')); show($('screen-practice')); show($('btnToSetupTop')); updateVisiblePractice(); loadRound(); }
+  function loadRound(){ busy = false; currentWord = words[pos]; $('feedback').textContent=''; $('feedback').className='feedback'; hide($('btnNext')); $('feedbackChoice').textContent=''; $('feedbackChoice').className='feedback'; hide($('btnNextChoice')); $('feedbackWrite').textContent=''; $('feedbackWrite').className='feedback'; hide($('btnNextWrite')); updateProgress(); if(mode === MODE_CHOICE) loadChoiceRound(); else if(mode === MODE_SPELL) loadSpellRound(); else loadWriteRound(); setTimeout(function(){ speak(currentWord); }, 250); }
+  function updateProgress(){ $('progressText').textContent = 'Palabra ' + (pos+1) + ' de ' + words.length; $('starText').textContent = '⭐ ' + score; $('progressBar').style.width = ((pos / words.length) * 100) + '%'; }
+
+  function loadChoiceRound(){ currentChoices = sampleDistractors(currentWord, words); currentChoiceStyle = Math.random() < 0.5 ? 'fish' : 'balloon'; renderChoices(); }
+  function renderChoices(){ var stage = $('choicesStage'); stage.innerHTML = ''; stage.className = 'choices-stage ' + (currentChoiceStyle === 'balloon' ? 'balloons' : ''); var palette = [['#ffd5e8'],['#d8f6ff'],['#fff1ba']]; var positions = [{left:'8%', top:'16%'},{left:'58%', top:'22%'},{left:'26%', top:'58%'}]; shuffle(positions); currentChoices.forEach(function(word, idx){ var btn = document.createElement('button'); btn.type='button'; btn.className='choice-item '+currentChoiceStyle; btn.textContent = disp(word); btn.dataset.word = word; btn.style.left = positions[idx].left; btn.style.top = positions[idx].top; btn.style.background = palette[idx][0]; btn.style.color = '#3b316c'; btn.style.animationName = idx % 2 ? 'swimB' : 'swimA'; btn.style.animationDuration = (3.1 + idx * 0.45) + 's'; btn.addEventListener('click', onChoiceClick); stage.appendChild(btn); }); }
+  function onChoiceClick(e){ if(busy) return; busy = true; var selected = e.currentTarget.dataset.word; var buttons = Array.prototype.slice.call($('choicesStage').querySelectorAll('.choice-item')); buttons.forEach(function(b){ b.disabled = true; }); if(String(selected).toLowerCase() === currentWord.toLowerCase()){ e.currentTarget.classList.add('correctPulse'); onSuccessChoice(); } else { e.currentTarget.classList.add('wrongShake'); wrongSound(); $('feedbackChoice').className='feedback bad'; $('feedbackChoice').textContent='Ups... intenta escuchar otra vez 👂'; var correctBtn = buttons.find(function(b){ return String(b.dataset.word).toLowerCase() === currentWord.toLowerCase(); }); if(correctBtn) correctBtn.style.outline = '5px solid rgba(46,204,113,.75)'; setTimeout(function(){ busy = false; renderChoices(); $('feedbackChoice').textContent=''; }, 1100); } }
+  function onSuccessChoice(){ score++; updateProgress(); successSound(); confetti(); $('feedbackChoice').className='feedback good'; $('feedbackChoice').textContent='¡Muy bien! 🎉'; setTimeout(function(){ speak(currentWord, 0.8); }, 300); show($('btnNextChoice')); busy = false; }
+
+  function loadSpellRound(){ target = currentWord.split(''); var tiles = target.map(function(ch,idx){ return {id:idx, ch:ch}; }); poolTiles = shuffle(tiles.slice()); var sameOrder = poolTiles.every(function(t,i){ return t.id===i; }); if(sameOrder && target.length>1){ poolTiles = shuffle(poolTiles); } placed = target.map(function(){ return null; }); locked = target.map(function(){ return false; }); renderSpell(); }
+  function renderSpell(){ var ans = $('answer'); ans.innerHTML=''; for(var i=0;i<target.length;i++){ var slot = document.createElement('div'); var isSpace = target[i] === ' '; slot.className = 'slot' + (isSpace ? ' space' : ''); if(placed[i]){ slot.className += ' filled'; if(locked[i]) slot.className += ' locked'; slot.textContent = isSpace ? '' : disp(placed[i].ch); if(!locked[i]){ slot.dataset.slot = i; slot.addEventListener('click', onSlotClick); } } ans.appendChild(slot); } var pool = $('pool'); pool.innerHTML=''; poolTiles.forEach(function(t){ var isSpace = t.ch === ' '; var el = document.createElement('div'); el.className = 'tile' + (isSpace ? ' space' : ''); el.textContent = isSpace ? '␣' : disp(t.ch); el.dataset.id = t.id; el.addEventListener('click', onTileClick); pool.appendChild(el); }); }
+  function onTileClick(e){ if(busy || mode !== MODE_SPELL) return; var id = parseInt(e.currentTarget.dataset.id, 10); var slotIdx = -1; for(var i=0;i<placed.length;i++){ if(placed[i]===null && !locked[i]){ slotIdx=i; break; } } if(slotIdx===-1) return; var ti=-1; for(var k=0;k<poolTiles.length;k++){ if(poolTiles[k].id===id){ ti=k; break; } } if(ti===-1) return; var tile = poolTiles.splice(ti,1)[0]; placed[slotIdx]=tile; clickSound(); renderSpell(); if(placed.every(function(p){ return p!==null; })) setTimeout(checkAnswer,220); }
+  function onSlotClick(e){ if(busy || mode !== MODE_SPELL) return; var i = parseInt(e.currentTarget.dataset.slot,10); if(locked[i] || !placed[i]) return; poolTiles.push(placed[i]); placed[i]=null; clickSound(); renderSpell(); }
+  function checkAnswer(){ var allCorrect = true; for(var i=0;i<target.length;i++){ var p = placed[i]; if(p && String(p.ch).toLowerCase() === String(target[i]).toLowerCase()) locked[i]=true; else allCorrect = false; } if(allCorrect){ onSuccessSpell(); } else { busy = true; wrongSound(); renderSpell(); var slots = $('answer').children; for(var j=0;j<target.length;j++){ if(!locked[j] && placed[j]) slots[j].className += ' wrong'; } $('feedback').className='feedback bad'; $('feedback').textContent='¡Casi! Inténtalo otra vez 🙂'; setTimeout(function(){ for(var m=0;m<target.length;m++){ if(!locked[m] && placed[m]){ poolTiles.push(placed[m]); placed[m]=null; } } shuffle(poolTiles); $('feedback').textContent=''; busy = false; renderSpell(); }, 950); } }
+  function onSuccessSpell(){ busy = true; renderSpell(); $('feedback').className='feedback good'; $('feedback').textContent='¡Correcto! 🎉'; score++; updateProgress(); successSound(); confetti(); setTimeout(function(){ speak(currentWord,0.8); },350); show($('btnNext')); busy = false; }
+
+  function randomExtraLetters(exclude, count){
+    var alphabet = 'abcdefghijklmnopqrstuvwxyz';
+    var extras = [];
+    var excludeArr = exclude.map(function(ch){ return String(ch).toLowerCase(); });
+    while(extras.length < count){
+      var ch = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+      if(ch === ' ') continue;
+      if(extras.indexOf(ch) !== -1) continue;
+      if(excludeArr.indexOf(ch) !== -1 && Math.random() < 0.65) continue;
+      extras.push(ch);
+    }
+    return extras;
+  }
+  function loadWriteRound(){
+    writeTarget = currentWord.split('');
+    writePlaced = writeTarget.map(function(ch){ return ch === ' ' ? {id:'space-' + Math.random(), ch:' ', fixed:true} : null; });
+    var realTiles = writeTarget.filter(function(ch){ return ch !== ' '; }).map(function(ch, idx){ return {id:'r' + idx + '-' + ch, ch:ch, real:true}; });
+    var extras = randomExtraLetters(writeTarget, 5).map(function(ch, idx){ return {id:'x' + idx + '-' + ch, ch:ch, real:false}; });
+    writePool = shuffle(realTiles.concat(extras));
+    renderWrite();
+  }
+  function renderWrite(){
+    var ans = $('answerWrite'); ans.innerHTML='';
+    for(var i=0;i<writeTarget.length;i++){
+      var slot = document.createElement('div');
+      var isSpace = writeTarget[i] === ' ';
+      slot.className = 'slot' + (isSpace ? ' space' : '');
+      if(writePlaced[i]){
+        if(!isSpace){ slot.className += ' filled'; slot.textContent = disp(writePlaced[i].ch); if(!writePlaced[i].fixed){ slot.dataset.slot = i; slot.addEventListener('click', onWriteSlotClick); } }
+      }
+      ans.appendChild(slot);
+    }
+    var pool = $('poolWrite'); pool.innerHTML='';
+    writePool.forEach(function(t){ var el = document.createElement('div'); el.className = 'tile'; el.textContent = disp(t.ch); el.dataset.id = t.id; el.addEventListener('click', onWriteTileClick); pool.appendChild(el); });
+  }
+  function onWriteTileClick(e){
+    if(busy || mode !== MODE_WRITE) return;
+    var id = e.currentTarget.dataset.id;
+    var slotIdx = -1;
+    for(var i=0;i<writePlaced.length;i++){ if(writeTarget[i] !== ' ' && writePlaced[i] === null){ slotIdx = i; break; } }
+    if(slotIdx === -1) return;
+    var idx = -1;
+    for(var k=0;k<writePool.length;k++){ if(writePool[k].id === id){ idx = k; break; } }
+    if(idx === -1) return;
+    var tile = writePool.splice(idx,1)[0];
+    writePlaced[slotIdx] = tile; clickSound(); renderWrite();
+  }
+  function onWriteSlotClick(e){
+    if(busy || mode !== MODE_WRITE) return;
+    var i = parseInt(e.currentTarget.dataset.slot, 10);
+    if(writeTarget[i] === ' ' || !writePlaced[i]) return;
+    writePool.push(writePlaced[i]); writePlaced[i] = null; clickSound(); renderWrite();
+  }
+  function clearWriteAttempt(){
+    if(mode !== MODE_WRITE) return;
+    for(var i=0;i<writePlaced.length;i++){
+      if(writeTarget[i] !== ' ' && writePlaced[i]){ writePool.push(writePlaced[i]); writePlaced[i] = null; }
+    }
+    shuffle(writePool); $('feedbackWrite').textContent=''; $('feedbackWrite').className='feedback'; renderWrite();
+  }
+  function checkWriteAnswer(){
+    if(busy || mode !== MODE_WRITE) return;
+    for(var i=0;i<writeTarget.length;i++){ if(writeTarget[i] !== ' ' && !writePlaced[i]){ $('feedbackWrite').className='feedback bad'; $('feedbackWrite').textContent='Completa todos los espacios primero 🙂'; return; } }
+    busy = true;
+    var ok = true;
+    for(var j=0;j<writeTarget.length;j++){
+      if(writeTarget[j] === ' ') continue;
+      if(!writePlaced[j] || String(writePlaced[j].ch).toLowerCase() !== String(writeTarget[j]).toLowerCase()){ ok = false; break; }
+    }
+    if(ok){
+      $('feedbackWrite').className='feedback good'; $('feedbackWrite').textContent='¡Correcto! 🎉';
+      score++; updateProgress(); successSound(); confetti(); setTimeout(function(){ speak(currentWord, 0.8); }, 300); show($('btnNextWrite')); busy = false;
+    } else {
+      wrongSound(); $('feedbackWrite').className='feedback bad'; $('feedbackWrite').textContent='Intenta de nuevo. Puedes mover fichas o borrar tu intento.'; busy = false;
+    }
+  }
+
+  function nextWord(){ pos++; if(pos >= words.length) showDone(); else loadRound(); }
+  function showDone(){ hide($('screen-practice')); show($('screen-done')); $('progressBar').style.width='100%'; var total = words.length, s=''; for(var i=0;i<Math.min(total,10);i++) s += '⭐'; $('doneStars').textContent = s + '  (' + score + '/' + total + ')'; var prefix = mode === MODE_CHOICE ? '¡Escogiste ' : (mode === MODE_SPELL ? '¡Deletreaste ' : '¡Escribiste '); $('doneMsg').textContent = prefix + score + ' de ' + total + ' palabras! Eres una estrella del spelling. 🌟'; confetti(); setTimeout(confetti, 400); }
+  function peek(){ var word = currentWord; var ov = document.createElement('div'); ov.className='peek'; ov.textContent = disp(word); document.body.appendChild(ov); setTimeout(function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); }, 1500); }
+  function goSetup(){ if(window.speechSynthesis){ try{ speechSynthesis.cancel(); }catch(e){} } hide($('screen-practice')); hide($('screen-done')); show($('screen-setup')); hide($('btnToSetupTop')); renderSetup(); }
+
+  $('btnStart').addEventListener('click', startPractice);
+  $('btnListenAll').addEventListener('click', function(){ audioCtx(); var w=getWords(); if(w.length) speakAll(w); });
+  $('btnClear').addEventListener('click', function(){ if(confirm('¿Borrar todas las palabras?')){ saveWords([]); renderSetup(); } });
+  $('optUpper').addEventListener('change', function(e){ upper = e.target.checked; saveOpt(); if(mode === MODE_CHOICE) renderChoices(); else if(mode === MODE_SPELL) renderSpell(); else renderWrite(); });
+  $('level1Card').addEventListener('click', function(){ setMode(MODE_CHOICE); });
+  $('level2Card').addEventListener('click', function(){ setMode(MODE_SPELL); });
+  $('level3Card').addEventListener('click', function(){ setMode(MODE_WRITE); });
+  $('btnSpeakChoice').addEventListener('click', function(){ audioCtx(); speak(currentWord); }); $('btnSlowChoice').addEventListener('click', function(){ audioCtx(); speak(currentWord, 0.5); }); $('btnPeekChoice').addEventListener('click', peek); $('btnNextChoice').addEventListener('click', nextWord);
+  $('btnSpeak').addEventListener('click', function(){ audioCtx(); speak(currentWord); }); $('btnSlow').addEventListener('click', function(){ audioCtx(); speak(currentWord, 0.5); }); $('btnPeek').addEventListener('click', peek); $('btnNext').addEventListener('click', nextWord);
+  $('btnSpeakWrite').addEventListener('click', function(){ audioCtx(); speak(currentWord); }); $('btnSlowWrite').addEventListener('click', function(){ audioCtx(); speak(currentWord, 0.5); }); $('btnPeekWrite').addEventListener('click', peek); $('btnCheckWrite').addEventListener('click', checkWriteAnswer); $('btnClearWrite').addEventListener('click', clearWriteAttempt); $('btnNextWrite').addEventListener('click', nextWord);
+  $('btnAgain').addEventListener('click', function(){ startPractice(); }); $('btnToSetup').addEventListener('click', goSetup); $('btnToSetupTop').addEventListener('click', goSetup);
+  loadOpt(); renderSetup();
+})();
+</script>
+</body>
+</html>
