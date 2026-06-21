@@ -47,7 +47,7 @@
   .progress-wrap{margin-bottom:12px;} .progress-top{display:flex; justify-content:space-between; align-items:center; font-weight:bold; margin-bottom:6px;} .bar{height:16px; background:#e7ecff; border-radius:10px; overflow:hidden;} .bar > i{display:block; height:100%; width:0%; background:linear-gradient(90deg,#ffcc00,#ff7a18); transition:width .35s ease;} .stars{color:var(--accent); font-size:1.1rem;}
   .listen-area{text-align:center; margin:6px 0 18px;} .speak-big{background:var(--accent2); color:#5b4500; border-radius:50%; width:120px; height:120px; font-size:3rem; box-shadow:0 8px 0 #d9a900; line-height:1;} .speak-big:active{transform:translateY(5px); box-shadow:0 3px 0 #d9a900;} .listen-sub{margin-top:10px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;}
   .mode-pill{display:inline-flex; align-items:center; justify-content:center; gap:8px; background:#f0ecff; color:#5b4bb7; border-radius:999px; padding:8px 14px; font-weight:bold; margin:0 auto 10px;}
-  .level-picker{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; margin:14px 0;}
+  .level-picker{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin:14px 0;}
   .level-card{background:#f8f7ff; border:3px solid #e3defd; border-radius:18px; padding:14px; cursor:pointer;}
   .level-card.active{border-color:#7c4dff; box-shadow:0 8px 18px rgba(124,77,255,.18);} .level-card strong{display:block; font-size:1.05rem; margin-bottom:6px;}
   .answer{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; min-height:64px; margin:8px 0 16px;}
@@ -70,9 +70,18 @@
   .write-panel{background:#f8f7ff; border:3px solid #e5ddff; border-radius:22px; padding:14px; margin-top:10px;}
   .write-tip{text-align:center; color:#5b5b7a; margin:-4px 0 12px;}
   .footer-note{text-align:center; color:#fff; opacity:.85; font-size:.85rem; margin-top:18px;} .warn{background:#fff3cd; color:#7a5b1e; border-radius:12px; padding:8px 12px; font-size:.85rem; margin-top:10px; text-align:center;}
+  /* ---- Nivel 4: escribir a mano ---- */
+  .draw-stage{display:flex; flex-direction:column; align-items:center; gap:12px;}
+  .draw-progress{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:2px 0;}
+  .draw-progress .slot{width:44px; height:54px; font-size:1.6rem;}
+  .draw-progress .slot.current{border-style:solid; border-color:#7c4dff; background:#f3efff; box-shadow:0 0 0 4px rgba(124,77,255,.18);}
+  .draw-prompt{font-weight:bold; color:#6a4bd0; font-size:1.1rem;}
+  .draw-pad-wrap{position:relative; width:300px; height:300px; max-width:86vw; max-height:86vw;}
+  canvas.draw-pad{width:100%; height:100%; display:block; background:#fffef8; border:4px dashed #c8b6ff; border-radius:26px; touch-action:none; cursor:crosshair;}
+  .draw-controls{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:2px;}
   @keyframes pop{0%{transform:scale(.3);}80%{transform:scale(1.08);}100%{transform:scale(1);}} @keyframes shake{0%,100%{transform:translateX(0);}20%{transform:translateX(-6px);}40%{transform:translateX(6px);}60%{transform:translateX(-5px);}80%{transform:translateX(5px);}} @keyframes fall{to{transform:translateY(108vh) rotate(720deg);}} @keyframes floaty{0%,100%{transform:translateY(0px);}50%{transform:translateY(-8px);}} @keyframes swimA{0%{transform:translateX(0) translateY(0);}25%{transform:translateX(18px) translateY(-6px);}50%{transform:translateX(0) translateY(5px);}75%{transform:translateX(-15px) translateY(-4px);}100%{transform:translateX(0) translateY(0);}} @keyframes swimB{0%{transform:translateX(0) translateY(0);}33%{transform:translateX(-18px) translateY(4px);}66%{transform:translateX(14px) translateY(-8px);}100%{transform:translateX(0) translateY(0);}} @keyframes glow{0%,100%{box-shadow:0 0 0 rgba(46,204,113,0);}50%{box-shadow:0 0 0 12px rgba(46,204,113,.18);}}
   .confetti{position:fixed; top:-20px; width:12px; height:18px; z-index:60; border-radius:3px; will-change:transform; animation:fall linear forwards;}
-  @media (max-width:640px){ .choice-item{min-width:110px; max-width:150px; min-height:66px; font-size:1.15rem; padding:12px 14px;} .choices-stage{min-height:320px;} .speak-big{width:108px; height:108px;} }
+  @media (max-width:640px){ .choice-item{min-width:110px; max-width:150px; min-height:66px; font-size:1.15rem; padding:12px 14px;} .choices-stage{min-height:320px;} .speak-big{width:108px; height:108px;} .draw-pad-wrap{width:260px; height:260px;} }
 </style>
 </head>
 <body>
@@ -83,7 +92,7 @@
   </div>
   <section id="screen-setup" class="card">
     <h1>Escribe las palabras de la semana</h1>
-    <p class="lead">Escribe hasta 10 palabras en inglés. La app tiene 3 niveles: <strong>Nivel 1</strong> para escoger la palabra correcta, <strong>Nivel 2</strong> para ordenar las letras y <strong>Nivel 3</strong> para escribirla con un grupo reducido de fichas.</p>
+    <p class="lead">Escribe hasta 10 palabras en inglés. La app tiene 4 niveles: <strong>Nivel 1</strong> escoger la palabra, <strong>Nivel 2</strong> ordenar las letras, <strong>Nivel 3</strong> escribir con fichas y <strong>Nivel 4</strong> escribir a mano cada letra con el dedo o el mouse.</p>
     <div id="wordList"></div>
     <div class="options"><label><input type="checkbox" id="optUpper"> Mostrar fichas en MAYÚSCULAS</label></div>
     <div class="mode-select">
@@ -92,6 +101,7 @@
         <button type="button" class="level-card active" id="level1Card"><strong>🎯 Nivel 1 · Escucha y escoge</strong></button>
         <button type="button" class="level-card" id="level2Card"><strong>🧩 Nivel 2 · Ordena las letras</strong></button>
         <button type="button" class="level-card" id="level3Card"><strong>✍️ Nivel 3 · Escucha y escribe</strong></button>
+        <button type="button" class="level-card" id="level4Card"><strong>🖊️ Nivel 4 · Escribe a mano</strong></button>
       </div>
     </div>
     <div class="row-btns"><button id="btnListenAll" class="btn blue">🔊 Escuchar todas</button><button id="btnClear" class="btn ghost small">🧹 Borrar todo</button></div>
@@ -133,6 +143,23 @@
       <div id="feedbackWrite" class="feedback"></div>
       <div class="controls"><button id="btnClearWrite" class="btn ghost">↩️ Borrar intento</button><button id="btnCheckWrite" class="btn blue">✅ Revisar</button><button id="btnNextWrite" class="btn green hidden">Siguiente ➡️</button></div>
     </div>
+
+    <div id="practice-level4" class="hidden">
+      <h2 style="text-align:center;">Escucha y escribe la letra a mano</h2>
+      <div class="listen-area"><button id="btnSpeakDraw" class="speak-big" title="Escuchar la palabra">🔊</button><div class="listen-sub"><button id="btnSlowDraw" class="btn small ghost">🐢 Despacio</button><button id="btnPeekDraw" class="btn small ghost">👀 Ver palabra</button></div></div>
+      <div class="draw-stage">
+        <div id="drawProgress" class="draw-progress"></div>
+        <div class="draw-prompt" id="drawPrompt">Escribe la 1ª letra</div>
+        <div class="draw-pad-wrap"><canvas id="drawPad" class="draw-pad" width="300" height="300"></canvas></div>
+        <div class="draw-controls">
+          <button id="btnDrawClear" class="btn small ghost">🧽 Borrar</button>
+          <button id="btnDrawGuide" class="btn small ghost">👀 Guía</button>
+          <button id="btnDrawCheck" class="btn blue">✓ Listo</button>
+        </div>
+      </div>
+      <div id="feedbackDraw" class="feedback"></div>
+      <div class="controls"><button id="btnNextDraw" class="btn green hidden">Siguiente ➡️</button></div>
+    </div>
   </section>
 
   <section id="screen-done" class="card hidden">
@@ -151,9 +178,11 @@
   var MODE_CHOICE = 'choice';
   var MODE_SPELL = 'spell';
   var MODE_WRITE = 'write';
+  var MODE_DRAW = 'draw';
   var words = [], pos = 0, target = [], poolTiles = [], placed = [], locked = [], score = 0, busy = false, upper = false;
   var mode = MODE_CHOICE, currentWord = '', currentChoices = [], currentChoiceStyle = 'fish';
   var writeTarget = [], writePool = [], writePlaced = [];
+  var drawTarget = [], drawDone = [], drawIdx = 0, drawStrokes = [], drawingNow = false, drawAttempts = 0, drawGuide = false, drawAutoTimer = null, drawPad = null, drawCtx = null;
 
   function $(id){ return document.getElementById(id); }
   function show(el){ el.classList.remove('hidden'); }
@@ -180,7 +209,7 @@
   function saveWords(arr){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(arr)); }catch(e){} }
   function loadSaved(){ try{ var s = localStorage.getItem(STORE_KEY); return s ? JSON.parse(s) : []; }catch(e){ return []; } }
   function saveOpt(){ try{ localStorage.setItem(STORE_OPT, JSON.stringify({upper:upper, mode:mode})); }catch(e){} }
-  function loadOpt(){ try{ var s = localStorage.getItem(STORE_OPT); if(s){ var obj = JSON.parse(s); upper = !!obj.upper; mode = obj.mode === MODE_SPELL ? MODE_SPELL : (obj.mode === MODE_WRITE ? MODE_WRITE : MODE_CHOICE); } }catch(e){} }
+  function loadOpt(){ try{ var s = localStorage.getItem(STORE_OPT); if(s){ var obj = JSON.parse(s); upper = !!obj.upper; mode = (obj.mode===MODE_SPELL)?MODE_SPELL:(obj.mode===MODE_WRITE)?MODE_WRITE:(obj.mode===MODE_DRAW)?MODE_DRAW:MODE_CHOICE; } }catch(e){} }
 
   function renderSetup(){
     var saved = loadSaved(), list = $('wordList'); list.innerHTML = '';
@@ -201,19 +230,23 @@
   function sampleDistractors(correct, list){ var pool = list.filter(function(w){ return w.toLowerCase() !== correct.toLowerCase(); }); shuffle(pool); var picked = pool.slice(0, 2); while(picked.length < 2){ picked.push(makeVariant(correct, picked.concat([correct]))); } return shuffle([correct].concat(picked)); }
   function makeVariant(word, avoid){ var variants = []; if(word.length > 2){ var arr = word.split(''); var swap = arr.slice(); var i = 0, j = arr.length - 1; if(i !== j){ var tmp = swap[i]; swap[i] = swap[j]; swap[j] = tmp; variants.push(swap.join('')); } var mid = arr.slice(); mid.splice(1, 0, arr[1]); variants.push(mid.join('').slice(0, word.length)); variants.push(word.slice(0,-1) + String.fromCharCode(Math.max(97, word.toLowerCase().charCodeAt(word.length-1)-1))); } variants.push(word + word.slice(-1)); variants.push(word.slice(0, Math.max(1, word.length-1))); variants = variants.map(cleanWord).filter(function(v){ return v && v.toLowerCase() !== word.toLowerCase(); }); for(var k=0;k<variants.length;k++){ var exists = avoid.some(function(a){ return String(a).toLowerCase() === variants[k].toLowerCase(); }); if(!exists) return variants[k]; } return word + '?'; }
 
-  function setMode(newMode){ mode = newMode === MODE_SPELL ? MODE_SPELL : (newMode === MODE_WRITE ? MODE_WRITE : MODE_CHOICE); updateModeCards(); saveOpt(); }
-  function updateModeCards(){ $('level1Card').classList.toggle('active', mode === MODE_CHOICE); $('level2Card').classList.toggle('active', mode === MODE_SPELL); $('level3Card').classList.toggle('active', mode === MODE_WRITE); }
+  function setMode(newMode){ mode = (newMode===MODE_SPELL)?MODE_SPELL:(newMode===MODE_WRITE)?MODE_WRITE:(newMode===MODE_DRAW)?MODE_DRAW:MODE_CHOICE; updateModeCards(); saveOpt(); }
+  function updateModeCards(){ $('level1Card').classList.toggle('active', mode===MODE_CHOICE); $('level2Card').classList.toggle('active', mode===MODE_SPELL); $('level3Card').classList.toggle('active', mode===MODE_WRITE); var l4=$('level4Card'); if(l4) l4.classList.toggle('active', mode===MODE_DRAW); }
   function updateVisiblePractice(){
-    $('modePill').textContent = mode === MODE_CHOICE ? '🎯 Nivel 1' : (mode === MODE_SPELL ? '🧩 Nivel 2' : '✍️ Nivel 3');
-    $('modePill').style.background = mode === MODE_CHOICE ? '#e8fbff' : (mode === MODE_SPELL ? '#f0ecff' : '#fff3df');
-    $('modePill').style.color = mode === MODE_CHOICE ? '#0d7b9a' : (mode === MODE_SPELL ? '#5b4bb7' : '#9a5d00');
-    if(mode === MODE_CHOICE){ show($('practice-level1')); hide($('practice-level2')); hide($('practice-level3')); }
-    else if(mode === MODE_SPELL){ hide($('practice-level1')); show($('practice-level2')); hide($('practice-level3')); }
-    else { hide($('practice-level1')); hide($('practice-level2')); show($('practice-level3')); }
+    var pill = $('modePill');
+    if(mode===MODE_CHOICE){ pill.textContent='🎯 Nivel 1'; pill.style.background='#e8fbff'; pill.style.color='#0d7b9a'; }
+    else if(mode===MODE_SPELL){ pill.textContent='🧩 Nivel 2'; pill.style.background='#f0ecff'; pill.style.color='#5b4bb7'; }
+    else if(mode===MODE_WRITE){ pill.textContent='✍️ Nivel 3'; pill.style.background='#fff3df'; pill.style.color='#9a5d00'; }
+    else { pill.textContent='🖊️ Nivel 4'; pill.style.background='#ffe9f2'; pill.style.color='#b03b76'; }
+    hide($('practice-level1')); hide($('practice-level2')); hide($('practice-level3')); hide($('practice-level4'));
+    if(mode===MODE_CHOICE) show($('practice-level1'));
+    else if(mode===MODE_SPELL) show($('practice-level2'));
+    else if(mode===MODE_WRITE) show($('practice-level3'));
+    else show($('practice-level4'));
   }
 
   function startPractice(){ var w = getWords(); if(w.length===0) return; words = shuffle(w.slice()); pos = 0; score = 0; busy = false; audioCtx(); hide($('screen-setup')); hide($('screen-done')); show($('screen-practice')); show($('btnToSetupTop')); updateVisiblePractice(); loadRound(); }
-  function loadRound(){ busy = false; currentWord = words[pos]; $('feedback').textContent=''; $('feedback').className='feedback'; hide($('btnNext')); $('feedbackChoice').textContent=''; $('feedbackChoice').className='feedback'; hide($('btnNextChoice')); $('feedbackWrite').textContent=''; $('feedbackWrite').className='feedback'; hide($('btnNextWrite')); updateProgress(); if(mode === MODE_CHOICE) loadChoiceRound(); else if(mode === MODE_SPELL) loadSpellRound(); else loadWriteRound(); setTimeout(function(){ speak(currentWord); }, 250); }
+  function loadRound(){ busy = false; currentWord = words[pos]; $('feedback').textContent=''; $('feedback').className='feedback'; hide($('btnNext')); $('feedbackChoice').textContent=''; $('feedbackChoice').className='feedback'; hide($('btnNextChoice')); $('feedbackWrite').textContent=''; $('feedbackWrite').className='feedback'; hide($('btnNextWrite')); var fd=$('feedbackDraw'); if(fd){ fd.textContent=''; fd.className='feedback'; } hide($('btnNextDraw')); updateProgress(); if(mode===MODE_CHOICE) loadChoiceRound(); else if(mode===MODE_SPELL) loadSpellRound(); else if(mode===MODE_WRITE) loadWriteRound(); else loadDrawRound(); setTimeout(function(){ speak(currentWord); }, 250); }
   function updateProgress(){ $('progressText').textContent = 'Palabra ' + (pos+1) + ' de ' + words.length; $('starText').textContent = '⭐ ' + score; $('progressBar').style.width = ((pos / words.length) * 100) + '%'; }
 
   function loadChoiceRound(){ currentChoices = sampleDistractors(currentWord, words); currentChoiceStyle = Math.random() < 0.5 ? 'fish' : 'balloon'; renderChoices(); }
@@ -305,23 +338,68 @@
     }
   }
 
+  /* ===================== NIVEL 4: escribir a mano ===================== */
+  /* Reconocedor de letras 100% offline (nube de puntos estilo $P). Como conocemos
+     la letra esperada, comparamos el trazo contra TODAS las letras y aceptamos si la
+     correcta queda casi tan cerca como la mejor. Es tolerante con la letra de un niño. */
+  var DRAW_FONT = "'Comic Sans MS','Chalkboard SE','Comic Neue','Trebuchet MS',sans-serif";
+  var CLOUD_N = 32, RASTER = 120, DRAW_TOL = 1.5, DRAW_TOPK = 4;
+  var letterCloudCache = {};
+  function isDrawable(ch){ return /[a-z]/i.test(ch); }
+  function cloudCentroid(pts){ var sx=0,sy=0; for(var i=0;i<pts.length;i++){ sx+=pts[i].x; sy+=pts[i].y; } return {x:sx/pts.length, y:sy/pts.length}; }
+  function normalizeCloud(pts){ if(!pts || !pts.length) return []; var c=cloudCentroid(pts); var minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity; for(var i=0;i<pts.length;i++){ var p=pts[i]; if(p.x<minX)minX=p.x; if(p.x>maxX)maxX=p.x; if(p.y<minY)minY=p.y; if(p.y>maxY)maxY=p.y; } var scale=Math.max(maxX-minX, maxY-minY) || 1; var out=[]; for(var k=0;k<pts.length;k++){ out.push({x:(pts[k].x-c.x)/scale, y:(pts[k].y-c.y)/scale}); } return out; }
+  function resampleToN(pts, n){ if(!pts.length) return []; if(pts.length===n) return pts.slice(); var out=[]; for(var i=0;i<n;i++){ var idx=Math.floor(i*(pts.length-1)/(n-1)); out.push(pts[idx]); } return out; }
+  function dist2(a,b){ var dx=a.x-b.x, dy=a.y-b.y; return dx*dx+dy*dy; }
+  function greedyMatch(a,b){ var n=a.length, used=new Array(n), sum=0; for(var i=0;i<n;i++){ var min=Infinity, idx=-1; for(var j=0;j<n;j++){ if(!used[j]){ var d=dist2(a[i],b[j]); if(d<min){ min=d; idx=j; } } } used[idx]=true; sum += (1-(i/n))*Math.sqrt(min); } return sum; }
+  function cloudDistance(a,b){ if(!a.length || !b.length) return Infinity; return Math.min(greedyMatch(a,b), greedyMatch(b,a)); }
+  function rasterPoints(ch){ var c=document.createElement('canvas'); c.width=RASTER; c.height=RASTER; var x=c.getContext('2d'); if(!x) return []; x.fillStyle='#fff'; x.fillRect(0,0,RASTER,RASTER); x.fillStyle='#000'; x.textAlign='center'; x.textBaseline='middle'; x.font='bold '+Math.floor(RASTER*0.74)+'px '+DRAW_FONT; x.fillText(ch, RASTER/2, RASTER/2+RASTER*0.02); var data; try{ data=x.getImageData(0,0,RASTER,RASTER).data; }catch(e){ return []; } var pts=[]; for(var y=0;y<RASTER;y+=2){ for(var xx=0;xx<RASTER;xx+=2){ if(data[(y*RASTER+xx)*4] < 110){ pts.push({x:xx, y:y}); } } } return pts; }
+  function buildLetterCloud(ch){ if(letterCloudCache[ch]) return letterCloudCache[ch]; var pts=rasterPoints(ch); if(!pts.length) return null; shuffle(pts); var sampled=pts.slice(0, CLOUD_N); var gi=0; while(sampled.length<CLOUD_N && pts.length){ sampled.push(pts[gi % pts.length]); gi++; } var cloud=normalizeCloud(sampled); letterCloudCache[ch]=cloud; return cloud; }
+  function ensureAlphabetClouds(){ var a='abcdefghijklmnopqrstuvwxyz'; for(var i=0;i<a.length;i++){ buildLetterCloud(a[i]); buildLetterCloud(a[i].toUpperCase()); } }
+  function letterDistances(child, tmplMap){ var alphabet='abcdefghijklmnopqrstuvwxyz', dists=[]; for(var i=0;i<alphabet.length;i++){ var ch=alphabet[i]; var dl=tmplMap[ch]?cloudDistance(child, tmplMap[ch]):Infinity; var du=tmplMap[ch.toUpperCase()]?cloudDistance(child, tmplMap[ch.toUpperCase()]):Infinity; dists.push({ch:ch, d:Math.min(dl,du)}); } return dists; }
+  function decide(dists, expLower){ var anyFinite=false, i; for(i=0;i<dists.length;i++){ if(isFinite(dists[i].d)){ anyFinite=true; break; } } if(!anyFinite) return {ok:true, unavailable:true}; var sorted=dists.slice().sort(function(a,b){ return a.d-b.d; }); var correctD=Infinity, rank=99; for(var r=0;r<sorted.length;r++){ if(sorted[r].ch===expLower){ correctD=sorted[r].d; rank=r+1; break; } } var bestOther=Infinity; for(var k=0;k<sorted.length;k++){ if(sorted[k].ch!==expLower && sorted[k].d<bestOther) bestOther=sorted[k].d; } var ok=(rank<=DRAW_TOPK) || (correctD <= bestOther*DRAW_TOL); return {ok:ok, bestCorrect:correctD, bestOther:bestOther, rank:rank}; }
+  function recognizeCloud(childPts, expectedChar){ var child=normalizeCloud(resampleToN(childPts, CLOUD_N)); if(!child.length) return {ok:false, empty:true}; ensureAlphabetClouds(); var res=decide(letterDistances(child, letterCloudCache), String(expectedChar).toLowerCase()); res.empty=false; return res; }
+
+  function setupDrawPad(){ drawPad=$('drawPad'); if(!drawPad) return; drawCtx=drawPad.getContext('2d'); drawPad.addEventListener('pointerdown', onDrawDown); drawPad.addEventListener('pointermove', onDrawMove); window.addEventListener('pointerup', onDrawUp); }
+  function padPoint(e){ var r=drawPad.getBoundingClientRect(); var sx=drawPad.width/(r.width||1), sy=drawPad.height/(r.height||1); return {x:(e.clientX-r.left)*sx, y:(e.clientY-r.top)*sy}; }
+  function currentDrawChar(){ return (drawIdx>=0 && drawIdx<drawTarget.length) ? drawTarget[drawIdx] : null; }
+  function clearPad(){ if(!drawCtx) return; drawCtx.clearRect(0,0,drawPad.width,drawPad.height); if(drawGuide) drawGuideLetter(); }
+  function drawGuideLetter(){ if(!drawCtx) return; var ch=currentDrawChar(); if(ch==null) return; drawCtx.save(); drawCtx.fillStyle='rgba(124,77,255,0.16)'; drawCtx.textAlign='center'; drawCtx.textBaseline='middle'; drawCtx.font='bold '+Math.floor(drawPad.height*0.7)+'px '+DRAW_FONT; drawCtx.fillText(disp(ch), drawPad.width/2, drawPad.height/2+drawPad.height*0.02); drawCtx.restore(); }
+  function onDrawDown(e){ if(busy || mode!==MODE_DRAW || !drawCtx) return; e.preventDefault(); drawingNow=true; if(drawAutoTimer){ clearTimeout(drawAutoTimer); drawAutoTimer=null; } try{ drawPad.setPointerCapture(e.pointerId); }catch(_){ } var p=padPoint(e); drawStrokes.push({x:p.x, y:p.y}); drawCtx.lineWidth=Math.max(8, drawPad.width*0.05); drawCtx.lineCap='round'; drawCtx.lineJoin='round'; drawCtx.strokeStyle='#3a2b6b'; drawCtx.beginPath(); drawCtx.moveTo(p.x, p.y); drawCtx.lineTo(p.x+0.1, p.y+0.1); drawCtx.stroke(); }
+  function onDrawMove(e){ if(!drawingNow || mode!==MODE_DRAW || !drawCtx) return; e.preventDefault(); var p=padPoint(e); drawStrokes.push({x:p.x, y:p.y}); drawCtx.lineTo(p.x, p.y); drawCtx.stroke(); }
+  function onDrawUp(){ if(!drawingNow) return; drawingNow=false; if(drawAutoTimer) clearTimeout(drawAutoTimer); drawAutoTimer=setTimeout(function(){ checkDrawLetter(); }, 1100); }
+
+  function loadDrawRound(){ drawTarget=currentWord.split(''); drawDone=drawTarget.map(function(ch){ return isDrawable(ch) ? null : ch; }); drawIdx=0; while(drawIdx<drawTarget.length && !isDrawable(drawTarget[drawIdx])) drawIdx++; drawAttempts=0; drawGuide=false; drawStrokes=[]; if(drawAutoTimer){ clearTimeout(drawAutoTimer); drawAutoTimer=null; } renderDrawProgress(); updateDrawPrompt(); clearPad(); }
+  function renderDrawProgress(){ var box=$('drawProgress'); if(!box) return; box.innerHTML=''; for(var i=0;i<drawTarget.length;i++){ var isSpace=drawTarget[i]===' '; var slot=document.createElement('div'); slot.className='slot'+(isSpace?' space':''); if(drawDone[i]!=null && !isSpace){ slot.className+=' locked'; slot.textContent=disp(drawDone[i]); } else if(i===drawIdx){ slot.className+=' current'; } box.appendChild(slot); } }
+  function updateDrawPrompt(){ var n=0; for(var i=0;i<=drawIdx && i<drawTarget.length;i++){ if(isDrawable(drawTarget[i])) n++; } var el=$('drawPrompt'); if(el) el.textContent = (drawIdx<drawTarget.length) ? ('Escribe la '+n+'ª letra') : '¡Completaste la palabra!'; }
+  function checkDrawLetter(){ if(busy || mode!==MODE_DRAW) return; if(drawAutoTimer){ clearTimeout(drawAutoTimer); drawAutoTimer=null; } var ch=currentDrawChar(); if(ch==null) return; var inkPts=drawStrokes.map(function(p){ return {x:p.x, y:p.y}; }); if(inkPts.length<6){ $('feedbackDraw').className='feedback bad'; $('feedbackDraw').textContent='Dibuja la letra ✏️'; return; } var res=recognizeCloud(inkPts, ch); var pass=res.ok; if(!pass && drawAttempts>=2 && drawGuide && inkPts.length>=10){ pass=true; } if(pass){ drawDone[drawIdx]=ch; clickSound(); advanceDrawLetter(); } else { drawAttempts++; wrongSound(); $('feedbackDraw').className='feedback bad'; if(drawAttempts>=2){ drawGuide=true; $('feedbackDraw').textContent='Usa la guía 👀 y traza encima de la letra'; } else { $('feedbackDraw').textContent='Casi... vuelve a intentarlo ✏️'; } drawStrokes=[]; clearPad(); } }
+  function advanceDrawLetter(){ drawAttempts=0; drawGuide=false; drawStrokes=[]; var next=drawIdx+1; while(next<drawTarget.length && !isDrawable(drawTarget[next])){ drawDone[next]=drawTarget[next]; next++; } drawIdx=next; renderDrawProgress(); if(drawIdx>=drawTarget.length){ onSuccessDraw(); } else { clearPad(); updateDrawPrompt(); $('feedbackDraw').className='feedback good'; $('feedbackDraw').textContent='¡Bien! 👍'; } }
+  function onSuccessDraw(){ busy=true; renderDrawProgress(); updateDrawPrompt(); $('feedbackDraw').className='feedback good'; $('feedbackDraw').textContent='¡Correcto! 🎉'; score++; updateProgress(); successSound(); confetti(); setTimeout(function(){ speak(currentWord, 0.8); }, 300); show($('btnNextDraw')); busy=false; }
+  function toggleDrawGuide(){ if(mode!==MODE_DRAW) return; drawGuide=!drawGuide; clearPad(); }
+  function drawClearBtn(){ if(mode!==MODE_DRAW) return; drawStrokes=[]; if(drawAutoTimer){ clearTimeout(drawAutoTimer); drawAutoTimer=null; } clearPad(); $('feedbackDraw').textContent=''; $('feedbackDraw').className='feedback'; }
+
   function nextWord(){ pos++; if(pos >= words.length) showDone(); else loadRound(); }
-  function showDone(){ hide($('screen-practice')); show($('screen-done')); $('progressBar').style.width='100%'; var total = words.length, s=''; for(var i=0;i<Math.min(total,10);i++) s += '⭐'; $('doneStars').textContent = s + '  (' + score + '/' + total + ')'; var prefix = mode === MODE_CHOICE ? '¡Escogiste ' : (mode === MODE_SPELL ? '¡Deletreaste ' : '¡Escribiste '); $('doneMsg').textContent = prefix + score + ' de ' + total + ' palabras! Eres una estrella del spelling. 🌟'; confetti(); setTimeout(confetti, 400); }
+  function showDone(){ hide($('screen-practice')); show($('screen-done')); $('progressBar').style.width='100%'; var total = words.length, s=''; for(var i=0;i<Math.min(total,10);i++) s += '⭐'; $('doneStars').textContent = s + '  (' + score + '/' + total + ')'; var prefix = (mode===MODE_CHOICE)?'¡Escogiste ':(mode===MODE_SPELL)?'¡Deletreaste ':(mode===MODE_WRITE)?'¡Escribiste ':'¡Escribiste a mano '; $('doneMsg').textContent = prefix + score + ' de ' + total + ' palabras! Eres una estrella del spelling. 🌟'; confetti(); setTimeout(confetti, 400); }
   function peek(){ var word = currentWord; var ov = document.createElement('div'); ov.className='peek'; ov.textContent = disp(word); document.body.appendChild(ov); setTimeout(function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); }, 1500); }
-  function goSetup(){ if(window.speechSynthesis){ try{ speechSynthesis.cancel(); }catch(e){} } hide($('screen-practice')); hide($('screen-done')); show($('screen-setup')); hide($('btnToSetupTop')); renderSetup(); }
+  function goSetup(){ if(window.speechSynthesis){ try{ speechSynthesis.cancel(); }catch(e){} } if(drawAutoTimer){ clearTimeout(drawAutoTimer); drawAutoTimer=null; } hide($('screen-practice')); hide($('screen-done')); show($('screen-setup')); hide($('btnToSetupTop')); renderSetup(); }
 
   $('btnStart').addEventListener('click', startPractice);
   $('btnListenAll').addEventListener('click', function(){ audioCtx(); var w=getWords(); if(w.length) speakAll(w); });
   $('btnClear').addEventListener('click', function(){ if(confirm('¿Borrar todas las palabras?')){ saveWords([]); renderSetup(); } });
-  $('optUpper').addEventListener('change', function(e){ upper = e.target.checked; saveOpt(); if(mode === MODE_CHOICE) renderChoices(); else if(mode === MODE_SPELL) renderSpell(); else renderWrite(); });
+  $('optUpper').addEventListener('change', function(e){ upper = e.target.checked; saveOpt(); if(mode === MODE_CHOICE) renderChoices(); else if(mode === MODE_SPELL) renderSpell(); else if(mode === MODE_WRITE) renderWrite(); else { renderDrawProgress(); clearPad(); } });
   $('level1Card').addEventListener('click', function(){ setMode(MODE_CHOICE); });
   $('level2Card').addEventListener('click', function(){ setMode(MODE_SPELL); });
   $('level3Card').addEventListener('click', function(){ setMode(MODE_WRITE); });
+  $('level4Card').addEventListener('click', function(){ setMode(MODE_DRAW); });
   $('btnSpeakChoice').addEventListener('click', function(){ audioCtx(); speak(currentWord); }); $('btnSlowChoice').addEventListener('click', function(){ audioCtx(); speak(currentWord, 0.5); }); $('btnPeekChoice').addEventListener('click', peek); $('btnNextChoice').addEventListener('click', nextWord);
   $('btnSpeak').addEventListener('click', function(){ audioCtx(); speak(currentWord); }); $('btnSlow').addEventListener('click', function(){ audioCtx(); speak(currentWord, 0.5); }); $('btnPeek').addEventListener('click', peek); $('btnNext').addEventListener('click', nextWord);
   $('btnSpeakWrite').addEventListener('click', function(){ audioCtx(); speak(currentWord); }); $('btnSlowWrite').addEventListener('click', function(){ audioCtx(); speak(currentWord, 0.5); }); $('btnPeekWrite').addEventListener('click', peek); $('btnCheckWrite').addEventListener('click', checkWriteAnswer); $('btnClearWrite').addEventListener('click', clearWriteAttempt); $('btnNextWrite').addEventListener('click', nextWord);
+  $('btnSpeakDraw').addEventListener('click', function(){ audioCtx(); speak(currentWord); }); $('btnSlowDraw').addEventListener('click', function(){ audioCtx(); speak(currentWord, 0.5); }); $('btnPeekDraw').addEventListener('click', peek); $('btnDrawClear').addEventListener('click', drawClearBtn); $('btnDrawGuide').addEventListener('click', toggleDrawGuide); $('btnDrawCheck').addEventListener('click', checkDrawLetter); $('btnNextDraw').addEventListener('click', nextWord);
   $('btnAgain').addEventListener('click', function(){ startPractice(); }); $('btnToSetup').addEventListener('click', goSetup); $('btnToSetupTop').addEventListener('click', goSetup);
-  loadOpt(); renderSetup();
+
+  /* Acceso para pruebas/depuración (no afecta el juego) */
+  window.__draw = { normalizeCloud:normalizeCloud, resampleToN:resampleToN, cloudDistance:cloudDistance, buildLetterCloud:buildLetterCloud, ensureAlphabetClouds:ensureAlphabetClouds, letterDistances:letterDistances, decide:decide, recognizeCloud:recognizeCloud, rasterPoints:rasterPoints };
+
+  loadOpt(); setupDrawPad(); renderSetup();
 })();
 </script>
 </body>
