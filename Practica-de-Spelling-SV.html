@@ -343,7 +343,7 @@
      la letra esperada, comparamos el trazo contra TODAS las letras y aceptamos si la
      correcta queda casi tan cerca como la mejor. Es tolerante con la letra de un niño. */
   var DRAW_FONT = "'Comic Sans MS','Chalkboard SE','Comic Neue','Trebuchet MS',sans-serif";
-  var CLOUD_N = 32, RASTER = 120, DRAW_TOL = 1.5, DRAW_TOPK = 4;
+  var CLOUD_N = 32, RASTER = 120, DRAW_TOL = 1.40; // <-- AJUSTA AQUI la exigencia del Nivel 4: mas ALTO = mas permisivo, mas BAJO = mas estricto (original 1.22)
   var letterCloudCache = {};
   function isDrawable(ch){ return /[a-z]/i.test(ch); }
   function cloudCentroid(pts){ var sx=0,sy=0; for(var i=0;i<pts.length;i++){ sx+=pts[i].x; sy+=pts[i].y; } return {x:sx/pts.length, y:sy/pts.length}; }
@@ -356,7 +356,7 @@
   function buildLetterCloud(ch){ if(letterCloudCache[ch]) return letterCloudCache[ch]; var pts=rasterPoints(ch); if(!pts.length) return null; shuffle(pts); var sampled=pts.slice(0, CLOUD_N); var gi=0; while(sampled.length<CLOUD_N && pts.length){ sampled.push(pts[gi % pts.length]); gi++; } var cloud=normalizeCloud(sampled); letterCloudCache[ch]=cloud; return cloud; }
   function ensureAlphabetClouds(){ var a='abcdefghijklmnopqrstuvwxyz'; for(var i=0;i<a.length;i++){ buildLetterCloud(a[i]); buildLetterCloud(a[i].toUpperCase()); } }
   function letterDistances(child, tmplMap){ var alphabet='abcdefghijklmnopqrstuvwxyz', dists=[]; for(var i=0;i<alphabet.length;i++){ var ch=alphabet[i]; var dl=tmplMap[ch]?cloudDistance(child, tmplMap[ch]):Infinity; var du=tmplMap[ch.toUpperCase()]?cloudDistance(child, tmplMap[ch.toUpperCase()]):Infinity; dists.push({ch:ch, d:Math.min(dl,du)}); } return dists; }
-  function decide(dists, expLower){ var anyFinite=false, i; for(i=0;i<dists.length;i++){ if(isFinite(dists[i].d)){ anyFinite=true; break; } } if(!anyFinite) return {ok:true, unavailable:true}; var sorted=dists.slice().sort(function(a,b){ return a.d-b.d; }); var correctD=Infinity, rank=99; for(var r=0;r<sorted.length;r++){ if(sorted[r].ch===expLower){ correctD=sorted[r].d; rank=r+1; break; } } var bestOther=Infinity; for(var k=0;k<sorted.length;k++){ if(sorted[k].ch!==expLower && sorted[k].d<bestOther) bestOther=sorted[k].d; } var ok=(rank<=DRAW_TOPK) || (correctD <= bestOther*DRAW_TOL); return {ok:ok, bestCorrect:correctD, bestOther:bestOther, rank:rank}; }
+  function decide(dists, expLower){ var anyFinite=false, i; for(i=0;i<dists.length;i++){ if(isFinite(dists[i].d)){ anyFinite=true; break; } } if(!anyFinite) return {ok:true, unavailable:true}; var sorted=dists.slice().sort(function(a,b){ return a.d-b.d; }); var correctD=Infinity, rank=99; for(var r=0;r<sorted.length;r++){ if(sorted[r].ch===expLower){ correctD=sorted[r].d; rank=r+1; break; } } var bestOther=Infinity; for(var k=0;k<sorted.length;k++){ if(sorted[k].ch!==expLower && sorted[k].d<bestOther) bestOther=sorted[k].d; } var ok = (correctD <= bestOther*DRAW_TOL); return {ok:ok, bestCorrect:correctD, bestOther:bestOther, rank:rank}; }
   function recognizeCloud(childPts, expectedChar){ var child=normalizeCloud(resampleToN(childPts, CLOUD_N)); if(!child.length) return {ok:false, empty:true}; ensureAlphabetClouds(); var res=decide(letterDistances(child, letterCloudCache), String(expectedChar).toLowerCase()); res.empty=false; return res; }
 
   function setupDrawPad(){ drawPad=$('drawPad'); if(!drawPad) return; drawCtx=drawPad.getContext('2d'); drawPad.addEventListener('pointerdown', onDrawDown); drawPad.addEventListener('pointermove', onDrawMove); window.addEventListener('pointerup', onDrawUp); }
