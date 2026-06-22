@@ -343,7 +343,7 @@
      la letra esperada, comparamos el trazo contra TODAS las letras y aceptamos si la
      correcta queda casi tan cerca como la mejor. Es tolerante con la letra de un niño. */
   var DRAW_FONT = "'Comic Sans MS','Chalkboard SE','Comic Neue','Trebuchet MS',sans-serif";
-  var CLOUD_N = 32, RASTER = 120, DRAW_TOL = 1.40; // <-- AJUSTA AQUI la exigencia del Nivel 4: mas ALTO = mas permisivo, mas BAJO = mas estricto (original 1.22)
+  var CLOUD_N = 32, RASTER = 120, DRAW_TOL = 1.32; // <-- AJUSTA AQUI la exigencia del Nivel 4: mas ALTO = mas permisivo, mas BAJO = mas estricto (original 1.22)
   var letterCloudCache = {};
   function isDrawable(ch){ return /[a-z]/i.test(ch); }
   function cloudCentroid(pts){ var sx=0,sy=0; for(var i=0;i<pts.length;i++){ sx+=pts[i].x; sy+=pts[i].y; } return {x:sx/pts.length, y:sy/pts.length}; }
