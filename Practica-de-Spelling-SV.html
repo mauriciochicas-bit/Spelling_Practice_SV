@@ -92,7 +92,7 @@
   </div>
   <section id="screen-setup" class="card">
     <h1>Escribe las palabras de la semana</h1>
-    <p class="lead">Escribe hasta 10 palabras en inglés. La app tiene 4 niveles: <strong>Nivel 1</strong> escoger la palabra, <strong>Nivel 2</strong> ordenar las letras, <strong>Nivel 3</strong> escribir con fichas y <strong>Nivel 4</strong> escribir a mano cada letra con el dedo o el mouse.</p>
+    <p class="lead">Escribe hasta 15 palabras en inglés. La app tiene 4 niveles: <strong>Nivel 1</strong> escoger la palabra, <strong>Nivel 2</strong> ordenar las letras, <strong>Nivel 3</strong> escribir con fichas y <strong>Nivel 4</strong> escribir a mano cada letra con el dedo o el mouse.</p>
     <div id="wordList"></div>
     <div class="options"><label><input type="checkbox" id="optUpper"> Mostrar fichas en MAYÚSCULAS</label></div>
     <div class="mode-select">
@@ -111,7 +111,7 @@
   </section>
 
   <section id="screen-practice" class="card hidden">
-    <div class="progress-wrap"><div class="progress-top"><span id="progressText">Palabra 1 de 10</span><span id="starText" class="stars">⭐ 0</span></div><div class="bar"><i id="progressBar"></i></div></div>
+    <div class="progress-wrap"><div class="progress-top"><span id="progressText">Palabra 1 de 15</span><span id="starText" class="stars">⭐ 0</span></div><div class="bar"><i id="progressBar"></i></div></div>
     <div id="modePill" class="mode-pill">🎯 Nivel 1</div>
 
     <div id="practice-level1">
@@ -174,7 +174,7 @@
   "use strict";
   var STORE_KEY = 'spelling_words_v3';
   var STORE_OPT = 'spelling_opt_v3';
-  var MAX_WORDS = 10;
+  var MAX_WORDS = 15;
   var MODE_CHOICE = 'choice';
   var MODE_SPELL = 'spell';
   var MODE_WRITE = 'write';
@@ -378,7 +378,7 @@
   function drawClearBtn(){ if(mode!==MODE_DRAW) return; drawStrokes=[]; if(drawAutoTimer){ clearTimeout(drawAutoTimer); drawAutoTimer=null; } clearPad(); $('feedbackDraw').textContent=''; $('feedbackDraw').className='feedback'; }
 
   function nextWord(){ pos++; if(pos >= words.length) showDone(); else loadRound(); }
-  function showDone(){ hide($('screen-practice')); show($('screen-done')); $('progressBar').style.width='100%'; var total = words.length, s=''; for(var i=0;i<Math.min(total,10);i++) s += '⭐'; $('doneStars').textContent = s + '  (' + score + '/' + total + ')'; var prefix = (mode===MODE_CHOICE)?'¡Escogiste ':(mode===MODE_SPELL)?'¡Deletreaste ':(mode===MODE_WRITE)?'¡Escribiste ':'¡Escribiste a mano '; $('doneMsg').textContent = prefix + score + ' de ' + total + ' palabras! Eres una estrella del spelling. 🌟'; confetti(); setTimeout(confetti, 400); }
+  function showDone(){ hide($('screen-practice')); show($('screen-done')); $('progressBar').style.width='100%'; var total = words.length, s=''; for(var i=0;i<Math.min(total,15);i++) s += '⭐'; $('doneStars').textContent = s + '  (' + score + '/' + total + ')'; var prefix = (mode===MODE_CHOICE)?'¡Escogiste ':(mode===MODE_SPELL)?'¡Deletreaste ':(mode===MODE_WRITE)?'¡Escribiste ':'¡Escribiste a mano '; $('doneMsg').textContent = prefix + score + ' de ' + total + ' palabras! Eres una estrella del spelling. 🌟'; confetti(); setTimeout(confetti, 400); }
   function peek(){ var word = currentWord; var ov = document.createElement('div'); ov.className='peek'; ov.textContent = disp(word); document.body.appendChild(ov); setTimeout(function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); }, 1500); }
   function goSetup(){ if(window.speechSynthesis){ try{ speechSynthesis.cancel(); }catch(e){} } if(drawAutoTimer){ clearTimeout(drawAutoTimer); drawAutoTimer=null; } hide($('screen-practice')); hide($('screen-done')); show($('screen-setup')); hide($('btnToSetupTop')); renderSetup(); }
 
